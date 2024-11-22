@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #f5f6fa, #e9ebf3);
+        }
+
+        .sidebar ul li a {
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #f4f4f4;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Top Bar -->
+    <div class="bg-black text-white px-6 py-4 flex justify-between items-center">
+        <!-- Left Section -->
+        <div class="flex items-center space-x-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance Logo" class="h-8" />
+            <a href="#" class="text-gray-300 hover:text-white">Home</a>
+            <a href="#" class="text-gray-300 hover:text-white">Markets</a>
+            <a href="#" class="text-gray-300 hover:text-white">Trade</a>
+            <a href="#" class="text-gray-300 hover:text-white">Earn</a>
+            <a href="#" class="text-gray-300 hover:text-white">Wallet</a>
+        </div>
+
+        <!-- Right Section -->
+        <div class="flex items-center space-x-4">
+            <span id="username-display" class="text-gray-300">User: Guest</span>
+            <input
+                type="text"
+                id="username-input"
+                placeholder="Enter username"
+                class="bg-gray-700 text-white px-4 py-2 rounded-md outline-none focus:ring focus:ring-yellow-500"
+                oninput="updateUsername()"
+            />
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 sidebar h-screen shadow-md">
+            <div class="p-4">
+                <ul>
+                    <li class="mb-4">
+                        <a class="text-gray-700 font-medium" href="#">Overview</a>
+                    </li>
+                    <li class="mb-4">
+                        <a class="text-gray-700" href="#">Fiat and Spot</a>
+                    </li>
+                    <li class="mb-4">
+                        <a class="text-gray-700" href="#">Margin</a>
+                    </li>
+                    <li class="mb-4">
+                        <a class="text-gray-700" href="#">Futures</a>
+                    </li>
+                    <li class="mb-4">
+                        <a class="text-gray-700" href="#">P2P</a>
+                    </li>
+                    <li class="mb-4">
+                        <a class="text-gray-700" href="#">Earn</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-lg font-medium">Overview</div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-yellow-500 text-white px-4 py-2 rounded-md" onclick="deposit()">Deposit</button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md" onclick="withdraw()">Withdraw</button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md" onclick="transfer()">Transfer</button>
+                    <a class="text-yellow-500" href="#">Transaction History</a>
+                </div>
+            </div>
+
+            <!-- Balance Section -->
+            <div class="bg-white p-6 rounded-md shadow-md mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-gray-500">Estimated Balance</div>
+                    <button class="text-gray-500" onclick="alert('Hide Balance action')">Hide Balance</button>
+                </div>
+                <div class="text-3xl font-medium" id="balance">0.00000000 BTC ≈ $0.00</div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="bg-white p-6 rounded-md shadow-md">
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-lg font-medium">Fiat and Spot</div>
+                        <div class="flex items-center space-x-4">
+                            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md" onclick="deposit()">Deposit</button>
+                            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md" onclick="withdraw()">Withdraw</button>
+                            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md" onclick="transfer()">Transfer</button>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-medium" id="fiat-spot-balance">0.00000000 BTC ≈ $0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0.00000000;
+        let fiatSpotBalance = 0.00000000;
+        const btcPrice = 91298; // Updated BTC price in USD
+
+        function formatNumber(num) {
+            return num.toLocaleString("en-US");
+        }
+
+        function updateBalances() {
+            document.getElementById("balance").innerText =
+                `${balance.toFixed(8)} BTC ≈ $${formatNumber((balance * btcPrice).toFixed(2))}`;
+            document.getElementById("fiat-spot-balance").innerText =
+                `${fiatSpotBalance.toFixed(8)} BTC ≈ $${formatNumber((fiatSpotBalance * btcPrice).toFixed(2))}`;
+        }
+
+        function updateUsername() {
+            const usernameInput = document.getElementById("username-input").value;
+            document.getElementById("username-display").innerText = `User: ${usernameInput || "Guest"}`;
+        }
+
+        function deposit() {
+            let amount = parseFloat(prompt("Enter amount to deposit in BTC:"));
+            if (!isNaN(amount) && amount > 0) {
+                balance += amount;
+                fiatSpotBalance += amount;
+                updateBalances();
+            } else {
+                alert("Invalid amount");
+            }
+        }
+
+        function withdraw() {
+            let amount = parseFloat(prompt("Enter amount to withdraw in BTC:"));
+            if (!isNaN(amount) && amount > 0 && amount <= balance) {
+                balance -= amount;
+                fiatSpotBalance -= amount;
+                updateBalances();
+            } else {
+                alert("Invalid amount or insufficient balance");
+            }
+        }
+
+        function transfer() {
+            let amount = parseFloat(prompt("Enter amount to transfer in BTC:"));
+            if (!isNaN(amount) && amount > 0 && amount <= balance) {
+                alert(`Transferred ${amount} BTC`);
+            } else {
+                alert("Invalid amount or insufficient balance");
+            }
+        }
+
+        updateBalances();
+    </script>
+</body>
+
+</html>
